@@ -7,7 +7,6 @@
 
 static SceUID g_hooks[5];
 int showMenu = 0;
-int mode = -1;
 
 static uint32_t old_buttons, pressed_buttons;
 
@@ -21,11 +20,17 @@ int sceDisplaySetFrameBuf_patched(const SceDisplayFrameBuf *pParam, int sync)
 {
     blit_set_frame_buf(pParam);
     
-	if(showMenu)
+	if(showMenu == 1)
 	{
 		blit_set_color(0x00FFFFFF, 0x00000000);
 		blit_stringf(896, 0, "%d %%", scePowerGetBatteryLifePercent());
     }
+	else if(showMenu == 2)
+	{
+		int batteryLifeTime = scePowerGetBatteryLifeTime();
+		blit_set_color(0x00FFFFFF, 0x00000000);
+		blit_stringf(848, 0, "%02ih %02im", batteryLifeTime / 60, batteryLifeTime - (batteryLifeTime / 60 * 60));
+	}
 	
     return TAI_CONTINUE(int, ref_hook0, pParam, sync);
 }   
@@ -44,7 +49,7 @@ int checkButtons(int port, tai_hook_ref_t ref_hook, SceCtrlData *ctrl, int count
 		{
 			pressed_buttons = ctrl->buttons & ~old_buttons;
 
-			if ((ctrl->buttons & SCE_CTRL_SELECT) && (ctrl->buttons & SCE_CTRL_DOWN))
+			if ((ctrl->buttons & SCE_CTRL_SELECT) && ((ctrl->buttons & SCE_CTRL_LEFT) || (ctrl->buttons & SCE_CTRL_DOWN)))
 				showMenu = 0;
 
 			old_buttons = ctrl->buttons;
@@ -52,13 +57,13 @@ int checkButtons(int port, tai_hook_ref_t ref_hook, SceCtrlData *ctrl, int count
 		}
 		else
 		{
-       
 			if ((ctrl->buttons & SCE_CTRL_SELECT) && (ctrl->buttons & SCE_CTRL_UP))
-			{         
-				if(mode == -1)
-					mode = 0;
-				
+			{	
 				showMenu = 1;
+			}
+			else if ((ctrl->buttons & SCE_CTRL_SELECT) && (ctrl->buttons & SCE_CTRL_RIGHT))
+			{	
+				showMenu = 2;
 			}
 		}
 	}
