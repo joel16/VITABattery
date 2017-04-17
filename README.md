@@ -1,4 +1,5 @@
-# VITABattery
+# VITABattery [![Github latest downloads](https://img.shields.io/github/downloads/joel16/VITABattery/total.svg)](https://github.com/joel16/VITAident/releases/latest)
+
 A simple tai-hen plugin that displays the current battery percentage on your PS VITA
 
 Installation:
