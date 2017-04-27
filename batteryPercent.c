@@ -55,7 +55,8 @@ int checkButtons(int port, tai_hook_ref_t ref_hook, SceCtrlData *ctrl, int count
 				showMenu = 0;
 
 			old_buttons = ctrl->buttons;
-			ctrl->buttons = 0;
+			
+			//ctrl->buttons = 0; //Disable controls
 		}
 		else
 		{
