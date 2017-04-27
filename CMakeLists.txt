@@ -27,7 +27,7 @@ endif()
 
 add_executable(batteryPercent
   batteryPercent.c
-  blit.c
+  draw.c
   font.c
 )
 

@@ -3,7 +3,7 @@
 #include <psp2/ctrl.h>
 #include <psp2/power.h>
 #include <taihen.h>
-#include "blit.h"
+#include "draw.h"
 
 static SceUID g_hooks[5];
 int showMenu = 0;
@@ -18,18 +18,19 @@ static tai_hook_ref_t ref_hook4;
 
 int sceDisplaySetFrameBuf_patched(const SceDisplayFrameBuf *pParam, int sync) 
 {
-    blit_set_frame_buf(pParam);
+    drawSetFrameBuf(pParam);
     
 	if(showMenu == 1)
 	{
-		blit_set_color(0x00FFFFFF, 0x00000000);
-		blit_stringf(896, 0, "%d %%", scePowerGetBatteryLifePercent());
+		drawSetColour(WHITE, BLACK);
+		drawStringf(896, 0, "%d %%", scePowerGetBatteryLifePercent());
     }
 	else if(showMenu == 2)
 	{
 		int batteryLifeTime = scePowerGetBatteryLifeTime();
-		blit_set_color(0x00FFFFFF, 0x00000000);
-		blit_stringf(848, 0, "%02ih %02im", batteryLifeTime / 60, batteryLifeTime - (batteryLifeTime / 60 * 60));
+		drawSetColour(WHITE, BLACK);
+		if (batteryLifeTime >= 0)
+			drawStringf(848, 0, "%02ih %02im", batteryLifeTime / 60, batteryLifeTime - (batteryLifeTime / 60 * 60));
 	}
 	
     return TAI_CONTINUE(int, ref_hook0, pParam, sync);
@@ -41,6 +42,7 @@ int checkButtons(int port, tai_hook_ref_t ref_hook, SceCtrlData *ctrl, int count
 
 	if (ref_hook == 0)
 		ret = 1;
+	
 	else
 	{
 		ret = TAI_CONTINUE(int, ref_hook, port, ctrl, count);
@@ -58,13 +60,9 @@ int checkButtons(int port, tai_hook_ref_t ref_hook, SceCtrlData *ctrl, int count
 		else
 		{
 			if ((ctrl->buttons & SCE_CTRL_SELECT) && (ctrl->buttons & SCE_CTRL_UP))
-			{	
 				showMenu = 1;
-			}
 			else if ((ctrl->buttons & SCE_CTRL_SELECT) && (ctrl->buttons & SCE_CTRL_RIGHT))
-			{	
 				showMenu = 2;
-			}
 		}
 	}
   
@@ -124,7 +122,7 @@ int module_start(SceSize argc, const void *args)
 										TAI_ANY_LIBRARY,
 										0xC4226A3E, // sceCtrlReadBufferPositive2
 										keys_patched4);
-	
+										
 	return SCE_KERNEL_START_SUCCESS;
 }
 

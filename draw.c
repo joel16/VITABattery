@@ -1,18 +1,13 @@
-/*
-	PSP VSH 24bpp text bliter
-*/
 #include <psp2/types.h>
 #include <psp2/display.h>
 #include <psp2/kernel/clib.h>
 
-#include "blit.h"
+#include "draw.h"
 
 #define ALPHA_BLEND 1
 
 extern unsigned char msx[];
 
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
 static int pwidth, pheight, bufferwidth, pixelformat;
 static unsigned int* vram32;
 
@@ -20,8 +15,6 @@ static uint32_t fcolor = 0x00ffffff;
 static uint32_t bcolor = 0xff000000;
 
 #if ALPHA_BLEND
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
 static uint32_t adjust_alpha(uint32_t col)
 {
 	uint32_t alpha = col>>24;
@@ -40,10 +33,10 @@ static uint32_t adjust_alpha(uint32_t col)
 }
 #endif
 
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-//int blit_setup(int sx,int sy,const char *msg,int fg_col,int bg_col)
-int blit_setup(void)
+/*
+*	Sets up draw functions.
+*/
+int drawInit(void)
 {
 	SceDisplayFrameBuf param;
 	param.size = sizeof(SceDisplayFrameBuf);
@@ -55,7 +48,8 @@ int blit_setup(void)
 	bufferwidth = param.pitch;
 	pixelformat = param.pixelformat;
 
-	if( (bufferwidth==0) || (pixelformat!=0)) return -1;
+	if((bufferwidth==0) || (pixelformat!=0)) 
+		return -1;
 
 	fcolor = 0x00ffffff;
 	bcolor = 0xff000000;
@@ -63,25 +57,25 @@ int blit_setup(void)
 	return 0;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// blit text
-/////////////////////////////////////////////////////////////////////////////
-void blit_set_color(int fg_col,int bg_col)
+/*
+*	This function sets the string colour, as well as the background colour.
+*/
+void drawSetColour(int fg_col, int bg_col)
 {
 	fcolor = fg_col;
 	bcolor = bg_col;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// blit text
-/////////////////////////////////////////////////////////////////////////////
-int blit_string(int sx,int sy,const char *msg)
+/*
+*	This function draws a string onto the screen.
+*/
+int drawString(int sx, int sy, const char *msg)
 {
-	int x,y,p;
+	int x, y, p;
 	int offset;
 	char code;
 	unsigned char font;
-	uint32_t fg_col,bg_col;
+	uint32_t fg_col, bg_col;
 
 #if ALPHA_BLEND
 	uint32_t col,c1,c2;
@@ -144,13 +138,19 @@ int blit_string(int sx,int sy,const char *msg)
 	return x;
 }
 
-int blit_string_ctr(int sy,const char *msg)
+/*
+*	This function draws a string onto the center of the screen.
+*/
+int drawStringCenter(int sy, const char *msg)
 {
-	int sx = 960/2-sceClibStrnlen(msg, 512)*(16/2);
-	return blit_string(sx,sy,msg);
+	int sx = (960 / 2) - (sceClibStrnlen(msg, 512) * (16 / 2));
+	return drawString(sx, sy, msg);
 }
 
-int blit_stringf(int sx, int sy, const char *msg, ...)
+/*
+*	This function draws a string onto the screen with string specifier formats.
+*/
+int drawStringf(int sx, int sy, const char *msg, ...)
 {
 	va_list list;
 	char string[512];
@@ -159,12 +159,14 @@ int blit_stringf(int sx, int sy, const char *msg, ...)
 	sceClibVsnprintf(string, 512, msg, list);
 	va_end(list);
 
-	return blit_string(sx, sy, string);
+	return drawString(sx, sy, string);
 }
 
-int blit_set_frame_buf(const SceDisplayFrameBuf *param)
-{
-	
+/*
+*	This function sets the frame buffer.
+*/
+int drawSetFrameBuf(const SceDisplayFrameBuf *param)
+{	
 	pwidth = param->width;
 	pheight = param->height;
 	vram32 = param->base;
@@ -176,5 +178,5 @@ int blit_set_frame_buf(const SceDisplayFrameBuf *param)
 	fcolor = 0x00ffffff;
 	bcolor = 0xff000000;
 
-  return 0;
+	return 0;
 }
