@@ -1,6 +1,9 @@
+#include <libk/stdarg.h>
+#include <libk/stdio.h>
+#include <libk/string.h>
+
 #include <psp2/types.h>
 #include <psp2/display.h>
-#include <psp2/kernel/clib.h>
 
 #include "draw.h"
 
@@ -143,7 +146,7 @@ int drawString(int sx, int sy, const char *msg)
 */
 int drawStringCenter(int sy, const char *msg)
 {
-	int sx = (960 / 2) - (sceClibStrnlen(msg, 512) * (16 / 2));
+	int sx = (960 / 2) - (strlen(msg) * (16 / 2));
 	return drawString(sx, sy, msg);
 }
 
@@ -156,7 +159,7 @@ int drawStringf(int sx, int sy, const char *msg, ...)
 	char string[512];
 
 	va_start(list, msg);
-	sceClibVsnprintf(string, 512, msg, list);
+	vsnprintf(string, 512, msg, list);
 	va_end(list);
 
 	return drawString(sx, sy, string);
@@ -173,7 +176,8 @@ int drawSetFrameBuf(const SceDisplayFrameBuf *param)
 	bufferwidth = param->pitch;
 	pixelformat = param->pixelformat;
 
-	if( (bufferwidth==0) || (pixelformat!=0)) return -1;
+	if((bufferwidth == 0) || (pixelformat != 0)) 
+		return -1;
 
 	fcolor = 0x00ffffff;
 	bcolor = 0xff000000;
