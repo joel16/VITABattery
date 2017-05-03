@@ -51,16 +51,17 @@ int checkButtons(int port, tai_hook_ref_t ref_hook, SceCtrlData *ctrl, int count
 		{
 			pressed_buttons = ctrl->buttons & ~old_buttons;
 
-			if ((ctrl->buttons & SCE_CTRL_SELECT) && ((ctrl->buttons & SCE_CTRL_LEFT) || (ctrl->buttons & SCE_CTRL_DOWN)))
+			if ((ctrl->buttons & SCE_CTRL_SELECT) && (ctrl->buttons & SCE_CTRL_LTRIGGER))
 				showMenu = 0;
 
 			old_buttons = ctrl->buttons;
 			
 			//ctrl->buttons = 0; //Disable controls
+			//changed button configs to prevent overlap with oclockvita
 		}
 		else
 		{
-			if ((ctrl->buttons & SCE_CTRL_SELECT) && (ctrl->buttons & SCE_CTRL_UP))
+			if ((ctrl->buttons & SCE_CTRL_SELECT) && (ctrl->buttons & SCE_CTRL_LEFT))
 				showMenu = 1;
 			else if ((ctrl->buttons & SCE_CTRL_SELECT) && (ctrl->buttons & SCE_CTRL_RIGHT))
 				showMenu = 2;
