@@ -51,7 +51,7 @@ int checkButtons(int port, tai_hook_ref_t ref_hook, SceCtrlData *ctrl, int count
 		{
 			pressed_buttons = ctrl->buttons & ~old_buttons;
 
-			if ((ctrl->buttons & SCE_CTRL_SELECT) && (ctrl->buttons & SCE_CTRL_DOWN))
+			if ((ctrl->buttons & SCE_CTRL_SELECT) && (ctrl->buttons & SCE_CTRL_LTRIGGER))
 				showMenu = 0;
 
 			old_buttons = ctrl->buttons;
