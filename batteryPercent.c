@@ -28,7 +28,7 @@ int sceDisplaySetFrameBuf_patched(const SceDisplayFrameBuf *pParam, int sync)
 			drawStringf(880, 0, "%d %%", percent);
 		else
 			drawStringf(896, 0, "%d %%", percent);
-    }
+	}
 	else if(showMenu == 2)
 	{
 		int batteryLifeTime = scePowerGetBatteryLifeTime();
