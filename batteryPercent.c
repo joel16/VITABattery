@@ -17,7 +17,7 @@ static tai_hook_ref_t ref_hook4;
 
 int sceDisplaySetFrameBuf_patched(const SceDisplayFrameBuf *pParam, int sync) 
 {
-    drawSetFrameBuf(pParam);
+	drawSetFrameBuf(pParam);
     
 	if(showMenu == 1)
 	{
@@ -46,7 +46,7 @@ int sceDisplaySetFrameBuf_patched(const SceDisplayFrameBuf *pParam, int sync)
 			drawStringf(800, 0, "Temp: %02i C", temp / 100);
 	}
 	
-    return TAI_CONTINUE(int, ref_hook0, pParam, sync);
+	return TAI_CONTINUE(int, ref_hook0, pParam, sync);
 }   
 
 int checkButtons(int port, tai_hook_ref_t ref_hook, SceCtrlData *ctrl, int count) 
