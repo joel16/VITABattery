@@ -11,5 +11,5 @@ Open ux0:/tai/config.txt and add the following:
 
 ```text
 # titleid for your application
-*RAND0666
+*ALL
 ux0:tai/batteryPercent.suprx
